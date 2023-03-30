@@ -28,3 +28,13 @@ connect()
 
     ssh ${OPTIONS} "${REMOTE}" 
 }
+
+transfer()
+{
+    local REMOTE=${1}
+    local LOCAL_FILE=${2}
+    local REMOTE_FILE=${3}
+    local OPTIONS=$(ssh_options "${REMOTE}")
+
+    scp ${OPTIONS} "${LOCAL_FILE}" "${REMOTE}:${REMOTE_FILE}" 
+}

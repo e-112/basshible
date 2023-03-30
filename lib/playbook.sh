@@ -15,6 +15,14 @@ register_var()
     echo "__playbook_register_var ${VAR_NAME}=\"${VAR_VALUE}\""
 }
 
+transfer_file()
+{
+    local LOCAL_FILE=${1}
+    local REMOTE_FILE=${2}
+
+    transfer "${CURRENT_REMOTE}" "${LOCAL_FILE}" "${REMOTE_FILE}"
+}
+
 run_local()
 {
     eval "${@}"
