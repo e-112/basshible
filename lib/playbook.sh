@@ -52,6 +52,61 @@ EOF
 
 }
 
+run_remote_as()
+{
+    # Keeping it simple for now.
+    # We require that the connection user is a sudoer.
+    
+    local REMOTE_USER=${1}
+    shift
+
+    local TOOLBOX="$(declare -f register_var)"
+    local REMOTE_ENV=
+
+    # Inject shared environment variables
+    if [ -s "${CURRENT_ENV_FILE}" ]
+    then
+        REMOTE_ENV="$(<${CURRENT_ENV_FILE})"
+    fi
+
+    # Inject the source of our remote command
+    local SOURCE="$(declare -f ${1})"
+    
+    # First hackish draft
+    # 1. Create a remote temp file 
+    local TMP_REMOTE_SCRIPT=$(connect "${CURRENT_REMOTE}" <<<"mktemp")
+
+    # 2. Populate it with our content and make it executable
+   connect "${CURRENT_REMOTE}" <<EOF
+cat >${TMP_REMOTE_SCRIPT} <<"INNER_EOF"
+#!/usr/bin/env bash
+${TOOLBOX}
+${REMOTE_ENV}
+${SOURCE}
+${@}
+INNER_EOF
+
+chmod a+x "${TMP_REMOTE_SCRIPT}"
+EOF
+   
+   # 3. Execute it with different user, then drop it
+   connect "${CURRENT_REMOTE}" <<EOF
+echo -n "${SUDO_PASSWORD}" | sudo -S "${TMP_REMOTE_SCRIPT}"
+rm "${TMP_REMOTE_SCRIPT}"
+EOF
+
+}
+
+requires_elevation()
+{
+    local PLAYBOOK_FILE=${1}
+
+    grep -q -E '^[[:space:]]+run_remote_as' "${PLAYBOOK_FILE}"
+
+    # Return 0 if we found at least a match
+    [[ $? == 1 ]]
+}
+
 run_playbook()
 {
     local PLAYBOOK_FILE=${1}

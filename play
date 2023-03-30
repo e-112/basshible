@@ -18,6 +18,11 @@ __main()
 
     local ENV_FILE=$(mktemp)
 
+    if requires_elevation "${PLAYBOOK_FILE}"
+    then
+        ask_for_sudo_password
+    fi
+
     for HOST_LINE in "${HOSTS[@]}" 
     do
         local SSH_HOST=$(resolve_connection_string "${HOST_LINE}")

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+SUDO_PASSWORD=
+
 ssh_options()
 {
     local REMOTE=${1}
@@ -38,3 +40,9 @@ transfer()
 
     scp ${OPTIONS} "${LOCAL_FILE}" "${REMOTE}:${REMOTE_FILE}" 
 }
+
+ask_for_sudo_password()
+{
+    read -p 'sudo password required: ' -s SUDO_PASSWORD
+}
+
