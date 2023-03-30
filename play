@@ -24,6 +24,8 @@ __main()
 
         run_playbook "${PLAYBOOK_FILE}" "${SSH_HOST}" "${ENV_FILE}"
     done
+
+    rm "${ENV_FILE}"
 }
 
 __main "${@}"
