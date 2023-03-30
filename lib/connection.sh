@@ -26,9 +26,16 @@ disconnect()
 connect()
 {
     local REMOTE=${1}
+    local COMMAND=${2}
     local OPTIONS=$(ssh_options "${REMOTE}")
 
-    ssh ${OPTIONS} "${REMOTE}" 
+    # Either provide COMMAND as function argument or from stdin
+    if [ -z "${COMMAND}" ]
+    then
+        COMMAND=$(cat)
+    fi
+
+    ssh -T ${OPTIONS} "${REMOTE}" "${COMMAND}"
 }
 
 transfer()
