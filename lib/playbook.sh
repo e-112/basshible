@@ -101,10 +101,8 @@ requires_elevation()
 {
     local PLAYBOOK_FILE=${1}
 
-    grep -q -E '^[[:space:]]+run_remote_as' "${PLAYBOOK_FILE}"
-
-    # Return 0 if we found at least a match
-    [[ $? == 1 ]]
+    # Returns 0 if at least a match has been found
+    grep -q -E '^[[:space:]]*run_remote_as' "${PLAYBOOK_FILE}"
 }
 
 run_playbook()
