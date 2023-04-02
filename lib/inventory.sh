@@ -1,17 +1,26 @@
 #!/usr/bin/env bash
 
-# pc_alias user=<> tags=<foo>,<bar>,<baz>
+# pc_alias host=<> user=<> tags=<foo>,<bar>,<baz>
 filter_hosts_by_tag()
 {
     local INVENTORY=${1}
     local TAG=${2}
+    local readonly ALL_TAG='all'
 
-    # Ignore comment line beginning by '#'
-    grep -v '^#' "${INVENTORY}" | \
-    # Ignore empty lines
-    grep -v -E '^[[:space:]]*$' |
-    # Keep lines where this a tag=<something>,<other>
-    grep -E ".*tags=[^[:space:]]*${TAG}(,|[[:space:]]|$)"
+   if [[ ${TAG} == ${ALL_TAG} ]]
+   then
+       # Ignore comment line beginning by '#'
+       grep -v '^#' "${INVENTORY}" | \
+       # Ignore empty lines
+       grep -v -E '^[[:space:]]*$'
+   else
+       # Ignore comment line beginning by '#'
+       grep -v '^#' "${INVENTORY}" | \
+       # Ignore empty lines
+       grep -v -E '^[[:space:]]*$' | \
+       # Keep lines where this a tags=<something>,<other>
+       grep -E ".*tags=[^[:space:]]*${TAG}(,|[[:space:]]|$)"
+   fi
 }
 
 extract_value()
