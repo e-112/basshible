@@ -14,14 +14,19 @@ __main()
     local INVENTORY=${2}
     local GROUP_TAG=${3:-all}
 
-    readarray -t HOSTS <<< $(filter_hosts_by_tag "${INVENTORY}" "${GROUP_TAG}")
+    readarray -t HOSTS < <(filter_hosts_by_tag "${INVENTORY}" "${GROUP_TAG}")
 
-    local ENV_FILE=$(mktemp)
+    if [[ ${#HOSTS[@]} == 0 ]]
+    then
+        exit 0
+    fi
 
     if requires_elevation "${PLAYBOOK_FILE}"
     then
         ask_for_sudo_password
     fi
+
+    local ENV_FILE=$(mktemp)
 
     for HOST_LINE in "${HOSTS[@]}" 
     do
