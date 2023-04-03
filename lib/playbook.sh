@@ -94,7 +94,7 @@ EOF
    # 3. Execute it with different user, then drop it
    connect "${CURRENT_REMOTE}" <<EOF
 set +o history
-echo -n "${SUDO_PASSWORD}" | sudo -S "${TMP_REMOTE_SCRIPT}"
+echo -n "${SUDO_PASSWORD}" | sudo -S -u "${REMOTE_USER}" "${TMP_REMOTE_SCRIPT}"
 rm "${TMP_REMOTE_SCRIPT}"
 EOF
 
