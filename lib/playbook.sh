@@ -44,6 +44,7 @@ run_remote()
     local SOURCE="$(declare -f ${1})"
     
     connect "${CURRENT_REMOTE}" <<EOF
+set +o history
 ${TOOLBOX}
 ${REMOTE_ENV}
 ${SOURCE}
@@ -80,6 +81,7 @@ run_remote_as()
    connect "${CURRENT_REMOTE}" <<EOF
 cat >${TMP_REMOTE_SCRIPT} <<"INNER_EOF"
 #!/usr/bin/env bash
+set +o history
 ${TOOLBOX}
 ${REMOTE_ENV}
 ${SOURCE}
@@ -91,6 +93,7 @@ EOF
    
    # 3. Execute it with different user, then drop it
    connect "${CURRENT_REMOTE}" <<EOF
+set +o history
 echo -n "${SUDO_PASSWORD}" | sudo -S "${TMP_REMOTE_SCRIPT}"
 rm "${TMP_REMOTE_SCRIPT}"
 EOF
