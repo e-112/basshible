@@ -6,13 +6,16 @@ ssh_options()
 {
     local REMOTE=${1}
     local MASTER_SOCKET="${REMOTE}.socket"
+    local OPTIONS='-o ConnectTimeout=4'
 
     if [ -S "${MASTER_SOCKET}" ]
     then
-        echo "-o ControlPath='${MASTER_SOCKET}'"
+        OPTIONS="${OPTIONS} -o ControlPath='${MASTER_SOCKET}'"
     else
-        echo "-M -o ControlPath='${MASTER_SOCKET}' -o ControlPersist=yes"
+        OPTIONS="${OPTIONS} -M -o ControlPath='${MASTER_SOCKET}' -o ControlPersist=yes"
     fi
+
+    echo "${OPTIONS}"
 }
 
 disconnect()
